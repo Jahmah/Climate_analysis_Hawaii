@@ -72,7 +72,7 @@ def stations():
     # Convert list of tuples into normal list
     station_names = list(np.ravel(results))
 
-    return jsonify(station_names)
+    return jsonify({"List of Stations" : station_names})
 
 
 # Return a Json list of temperature Observations (tobs) for the previous year
@@ -81,8 +81,7 @@ def stations():
 def tobs():
     """Return a list of all temperature observations for the previous year"""
     # Query all tobs
-    results = session.query(Measurement.tobs).filter(Measurement.tobs >= '2016-08-23').\
-              order_by(Measurement.tobs).all()
+    results = session.query(Measurement.tobs).all()
 
     # Convert list of tuples into normal list
     tobs_last12mths = list(np.ravel(results))
@@ -101,7 +100,8 @@ def temperatures_start(start):
     # Convert list of tuples into normal list
     temperatures_start_date = list(np.ravel(results))
 
-    return jsonify(temperatures_start_date)
+    return jsonify({"TMIN": temperatures_start_date[0], "TAVG": temperatures_start_date[1],
+                    "TMAX": temperatures_start_date[2]})
 
 
 # Given the start and the end date, calculate the TMIN, TAVG, and TMAX for dates
@@ -116,8 +116,10 @@ def temperatures_start_end(start, end):
     # Convert list of tuples into normal list
     temperatures_start_end = list(np.ravel(results))
 
-    return jsonify(temperatures_start_end)
-
+    
+    return jsonify({"TMIN" : temperatures_start_end[0], "TAVG" : temperatures_start_end[1], 
+                    "TMAX": temperatures_start_end[2]})
+                   
 
 if __name__ == "__main__":
     app.run(debug=True)
