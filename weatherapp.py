@@ -1,6 +1,6 @@
-##################################################
-# FLASK app for generating Hawaii Weather data
-#################################################
+###############################################
+# FLASK API for querying Hawaii Weather data
+###############################################
 
 import numpy as np
 
@@ -27,19 +27,20 @@ Base.prepare(engine, reflect=True)
 Measurement = Base.classes.measurement
 Station = Base.classes.station
 
-# Create our session (link) from Python to the DB
+# Create a session (link) from Python to the DB
 session = Session(engine)
 
 
-#################################################
+#########################
 # Flask Setup
-#################################################
+#########################
+
 app = Flask(__name__)
 
 
-#################################################
+###########################
 # Flask Routes
-#################################################
+###########################
 
 # Query and return dates and precipitation values in json from the last year.
 #
@@ -50,7 +51,7 @@ def precipitation():
     results = session.query(Measurement.date, Measurement.prcp).\
               filter(Measurement.date >= '2016-08-23').order_by(Measurement.date).all()
 
-    # Create a dictionary from the row data and append to a list
+    # Create a dictionary from the rows of data and append to a list
     precipitation_last12mths = []
     for p in results:
         prcp_dict = {}
@@ -61,7 +62,7 @@ def precipitation():
     return jsonify(precipitation_last12mths)
 
 
-# Return a json list of stations from the dataset.
+# Return a Json list of stations from the dataset.
 #
 @app.route("/api/v1.0/stations")
 def stations():
@@ -90,6 +91,7 @@ def tobs():
 
 
 # Return a Json list of the minimum, average and the max temperatures from a given start date
+#
 @app.route("/api/v1.0/<start>")
 def temperatures_start(start):
     """ Calculate TMIN, TAVG, and TMAX for all dates from start date."""
